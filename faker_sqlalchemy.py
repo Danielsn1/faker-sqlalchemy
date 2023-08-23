@@ -208,16 +208,9 @@ class SqlAlchemyProvider(BaseProvider):
         assert isinstance(model, DeclarativeMeta)
         assert not (generate_primary_keys and generate_related), "`generate_primary_keys` and `generate_related` " \
                                                                  "MUST NOT both be set to True"
-
         inspection: Mapper = inspect(model)
 
-        values = {}
-        for column in inspection.columns:
-            if column.name in overrides:
-                values[column.name] = overrides[column.name]
-            elif not column.primary_key or generate_primary_keys:
-                if not column.foreign_keys:
-                    values[column.name] = self.sqlalchemy_column_value(column)
+        values = self._get_values(inspection.columns, generate_primary_keys, **overrides)
 
         if generate_related:
             relationship_property: RelationshipProperty
@@ -241,6 +234,17 @@ class SqlAlchemyProvider(BaseProvider):
             return generator_spec(self.generator, column)
         else:
             return self._find_generator(generator_spec)()
+        
+    def _get_values(self, columns: list[Column], generate_primary_keys=False, **overrides):
+        
+        values = {}
+        for column in columns:
+            if column.name in overrides:
+                values[column.name] = overrides[column.name]
+            elif not column.primary_key or generate_primary_keys:
+                if not column.foreign_keys:
+                    values[column.name] = self.sqlalchemy_column_value(column)
+        return values
 
     def _find_generator_spec(self, column: Column):
         if type(column.type) in self.MAPPINGS:
