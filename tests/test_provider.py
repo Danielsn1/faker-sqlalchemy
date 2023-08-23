@@ -21,13 +21,13 @@ class SqlAlchemyProviderTests(unittest.TestCase):
         table_result = self.faker.pandas_series(model)
         model_result = self.faker.pandas_series(Model)
         self.assertIsNone(result.id)
-        self.assertIsNone(table_result.id)
-        self.assertIsNone(model_result.id)
+        self.assertFalse('id' in table_result.index)
+        self.assertFalse('id' in model_result.index)
 
     def test_primary_key_fields_may_be_generated(self):
         result = self.faker.sqlalchemy_model(Model, generate_primary_keys=True)
-        table_result = self.faker.pandas_series(model)
-        model_result = self.faker.pandas_series(Model)
+        table_result = self.faker.pandas_series(model, generate_primary_keys=True)
+        model_result = self.faker.pandas_series(Model, generate_primary_keys=True)
         self.assertIsNotNone(result.id)
         self.assertIsNotNone(table_result.id)
         self.assertIsNotNone(model_result.id)

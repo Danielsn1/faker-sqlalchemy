@@ -62,6 +62,7 @@ __all__ = (
 
 model = Table(
     'model', metadata,
+    Column('id', Integer, primary_key=True),
     Column('big_integer', BigInteger),
     Column('boolean',Boolean),
     Column('date', Date),
