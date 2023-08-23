@@ -5,7 +5,7 @@ from sqlalchemy.dialects.sqlite import DATE as SQLITE_DATE
 from sqlalchemy import (
     Column,
     ForeignKey,
-
+    MetaData,
     ARRAY,
     BIGINT,
     BigInteger,
@@ -47,9 +47,11 @@ from sqlalchemy import (
     UnicodeText,
     VARBINARY,
     VARCHAR,
+    Table
 )
 
 Base = declarative_base()
+metadata = MetaData()
 
 __all__ = (
     "Base",
@@ -58,6 +60,27 @@ __all__ = (
     "TypeOverrideModel",
 )
 
+model = Table(
+    'model', metadata,
+    Column('big_integer', BigInteger),
+    Column('boolean',Boolean),
+    Column('date', Date),
+    Column('datetime', DateTime),
+    # enumeration = Column(Enum)
+    Column('float', Float),
+    Column('integer', Integer),
+    Column('interval', Interval),
+    Column('json', JSON),
+    Column('large_binary', LargeBinary),
+    Column('numeric', Numeric),
+    # pickle_type = Column(PickleType)
+    Column('time', Time),
+    # tuple_type = Column(TupleType)
+    Column('small_integer', SmallInteger),
+    Column('string', String),
+    Column('unicode', Unicode),
+    Column('unicode_text', UnicodeText)
+)
 
 class Model(Base):
     __tablename__ = "model"
