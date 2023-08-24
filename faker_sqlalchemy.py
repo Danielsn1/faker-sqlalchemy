@@ -52,6 +52,7 @@ releasing support for python 3.11.
 
 import datetime
 from typing import Any, TypeVar, Type, Dict, Union, List, Callable
+import pandas as pd
 
 from faker import Faker
 from faker.providers import BaseProvider
@@ -86,6 +87,7 @@ from sqlalchemy import (
     Time,
     Unicode,
     UnicodeText,
+    Table
 )
 
 __version__ = "0.10.2208140"
@@ -220,6 +222,17 @@ class SqlAlchemyProvider(BaseProvider):
                 )
 
         return model(**values)
+    
+    def pandas_series(self, structure: Union[Type[ModelType], Table], generate_primary_keys=False, **overrides) -> pd.Series:
+        if isinstance(structure, Table):
+            columns = structure.c
+        elif isinstance(structure, DeclarativeMeta):
+            inspection: Mapper = inspect(structure)
+            columns = inspection.columns
+        else:
+            raise TypeError(f'{type(structure)} is not supported')
+        
+        return pd.Series(self._get_values(columns, generate_primary_keys, **overrides))
 
     def sqlalchemy_column_value(self, column: Column) -> ColumnType:
         """Creates an instance of a type specified by ``column``.
