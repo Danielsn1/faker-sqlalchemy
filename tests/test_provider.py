@@ -41,6 +41,13 @@ class SqlAlchemyProviderTests(unittest.TestCase):
         self.assertEqual(table_result.string, override)
         self.assertEqual(model_result.string, override)
 
+    def test_char_returns_correct_length(self):
+        result = self.faker.sqlalchemy_model(Model)
+        table_result = self.faker.pandas_series(model)
+        model_result = self.faker.pandas_series(Model)
+        self.assertTrue(len(result.char2) == len(table_result.char2) == len(model_result.char2) == 2)
+        self.assertTrue(len(result.char6) == len(table_result.char6) == len(model_result.char6) == 6)
+
     def test_relationships_are_set_to_none_by_default(self):
         result = self.faker.sqlalchemy_model(RelationshipModel)
         self.assertIsNone(result.model_id)
