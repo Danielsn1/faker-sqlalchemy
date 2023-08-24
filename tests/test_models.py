@@ -38,7 +38,7 @@ from sqlalchemy import (
     SMALLINT,
     SmallInteger,
     String,
-    TEXT,
+    Text,
     TIME,
     Time,
     TIMESTAMP,
@@ -65,6 +65,8 @@ model = Table(
     Column('id', Integer, primary_key=True),
     Column('big_integer', BigInteger),
     Column('boolean',Boolean),
+    Column('char2', CHAR(2)),
+    Column('char6', CHAR(6)),
     Column('date', Date),
     Column('datetime', DateTime),
     # enumeration = Column(Enum)
@@ -75,6 +77,7 @@ model = Table(
     Column('large_binary', LargeBinary),
     Column('numeric', Numeric),
     # pickle_type = Column(PickleType)
+    Column('text', Text),
     Column('time', Time),
     # tuple_type = Column(TupleType)
     Column('small_integer', SmallInteger),
@@ -90,6 +93,8 @@ class Model(Base):
 
     big_integer = Column(BigInteger)
     boolean = Column(Boolean)
+    char2 = Column(CHAR(2))
+    char6 = Column(CHAR(6))
     date = Column(Date)
     datetime = Column(DateTime)
     # enumeration = Column(Enum)
@@ -100,6 +105,7 @@ class Model(Base):
     large_binary = Column(LargeBinary)
     numeric = Column(Numeric)
     # pickle_type = Column(PickleType)
+    text = Column(Text)
     time = Column(Time)
     # tuple_type = Column(TupleType)
     small_integer = Column(SmallInteger)
