@@ -232,7 +232,7 @@ class SqlAlchemyProvider(BaseProvider):
         else:
             raise TypeError(f'{type(structure)} is not supported')
         
-        return pd.Series(self._get_values(columns, generate_primary_keys, **overrides))
+        return pd.Series(self._get_values(columns, generate_primary_keys, model=False, **overrides))
 
     def sqlalchemy_column_value(self, column: Column) -> ColumnType:
         """Creates an instance of a type specified by ``column``.
@@ -248,14 +248,14 @@ class SqlAlchemyProvider(BaseProvider):
         else:
             return self._find_generator(generator_spec)()
         
-    def _get_values(self, columns: list[Column], generate_primary_keys=False, **overrides):
+    def _get_values(self, columns: list[Column], generate_primary_keys=False, model=True, **overrides):
         
         values = {}
         for column in columns:
             if column.name in overrides:
                 values[column.name] = overrides[column.name]
             elif not column.primary_key or generate_primary_keys:
-                if not column.foreign_keys:
+                if not column.foreign_keys or not model:
                     values[column.name] = self.sqlalchemy_column_value(column)
         return values
 
