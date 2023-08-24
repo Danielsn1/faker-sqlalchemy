@@ -69,6 +69,7 @@ from sqlalchemy import (
     inspect,
     Column,
     ARRAY,
+    CHAR,
     BigInteger,
     BINARY,
     Boolean,
@@ -84,10 +85,11 @@ from sqlalchemy import (
     Numeric,
     SmallInteger,
     String,
+    Table,
+    Text,
     Time,
     Unicode,
     UnicodeText,
-    Table
 )
 
 __version__ = "0.10.2208140"
@@ -107,9 +109,11 @@ GeneratorSpec = Union[str, GeneratorFunction]
 def _generate_date(generator: DateTimeProvider, _: Any) -> datetime.date:
     return generator.date_time().date()
 
-
 def _generate_time(generator: DateTimeProvider, _: Any) -> datetime.time:
     return generator.date_time().time()
+
+def _generate_char(generator: PythonProvider, column: Column) -> str:
+    return generator.pystr(min_chars=column.type.length, max_chars=column.type.length)
 
 
 def _generate_json(generator: PythonProvider, _: Any) -> Dict[str, Union[str, int, bool, List[PrimitiveJsonTypes], Dict[str, PrimitiveJsonTypes]]]:
@@ -131,6 +135,7 @@ def _generate_small_bytes(generator: MiscProvider, _: Any) -> bytes:
 DEFAULT_MAPPINGS: Dict[TypeEngine, GeneratorSpec] = {
     BigInteger: "pyint",
     Boolean: "pybool",
+    CHAR: _generate_char,
     Date: _generate_date,
     DateTime: "date_time",
     Float: "pyfloat",
@@ -141,6 +146,7 @@ DEFAULT_MAPPINGS: Dict[TypeEngine, GeneratorSpec] = {
     Numeric: "pyfloat",
     SmallInteger: "pyint",
     String: "pystr",
+    Text: "pystr",
     Time: _generate_time,
     Unicode: "pystr",
     UnicodeText: "pystr",
